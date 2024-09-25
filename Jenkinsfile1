@@ -1,0 +1,32 @@
+pipeline {
+    agent { label 'Jenkins-agent' }
+    tools {
+        jdk 'Java17'
+        maven 'Maven3'
+    }
+    stages{
+        stage("Cleanup Workspace"){
+                steps {
+                cleanWs()
+                }
+        }
+       stage("Checkout from SCM"){
+                steps {
+                    git branch: 'main', credentialsId: 'github', url: 'https://github.com/sahana17-dec/gamutkart.git'
+                }
+        }
+       stage('Build') {
+            steps {
+                sh 'mvn install -Dmaven.test.skip=true'
+            }
+        }
+		
+        stage('Unit Tests') {
+            steps {
+                sh 'mvn compiler:testCompile'
+                sh 'mvn surefire:test'
+                junit 'target/**/*.xml'
+            }
+        }
+    }
+}
