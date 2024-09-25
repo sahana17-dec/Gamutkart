@@ -15,18 +15,17 @@ pipeline {
                     git branch: 'main', credentialsId: 'github', url: 'https://github.com/sahana17-dec/gamutkart.git'
                 }
         }
-       stage('Build') {
+        stage("Build Application"){
             steps {
-                sh 'mvn install -Dmaven.test.skip=true'
+                sh "mvn clean package"
             }
+
         }
-		
-        stage('Unit Tests') {
-            steps {
-                sh 'mvn compiler:testCompile'
-                sh 'mvn surefire:test'
-                junit 'target/**/*.xml'
-            }
-        }
+
+       stage("Test Application"){
+           steps {
+                 sh "mvn test"
+           }
+       }
     }
 }
